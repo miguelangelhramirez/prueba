@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="css/estilos.css">
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/font-awesome/css/font-awesome.min.css">
+	<title>Prueba Miguel</title>
+</head>
+<body>
+
+	<header>
+		<nav class="nav_header navbar navbar-light bg-light">
+		  <div class="container">
+		    <a class="navbar-brand">Awesome Heroes</a>
+		    <form class="d-flex">
+		      <input class="form-control me-2 text-center" type="search" placeholder="&#x1f50d;" aria-label="Search" onkeyup="buscar(this.value)">
+		    </form>
+		  </div>
+		</nav>
+		<div id="banner_principal" class="container-fluid banner_principal ps-0 pe-0">
+
+			<div class="container" style="padding-top: 100px;">
+				
+				<div class="container_voto col-lg-6 col-sm-12">
+					<h2 id="titulo_banner_voto">¿Cómo funciona?</h2>
+
+					<p id="contenido_banner_voto">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+					tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+					quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+					consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+					cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+					proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+				    <p id="contenido_dos_banner_voto" style="padding-top: 20px;"><b>¿Cuál es tu voto?</b></p>
+
+				    <div class="text-center" style="padding-top: 30px;">
+
+				    	<button id="btn_volver" type="button" class="btn btn-outline-light" onclick="nuevoVoto()">Volver a votar</button>
+
+					</div>	
+
+				    <div id="div_btn_votos" class="d-flex div_btn_votos">
+
+						<button id="btn_votos_positivos" type="button" class="btn_voto btn_voto_positivo"><i class="fa fa-thumbs-up" aria-hidden="true"></i></button>
+						<button id="btn_votos_negativos" type="button" class="btn_voto btn_voto_negativo"><i class="fa fa-thumbs-down" aria-hidden="true"></i></button>
+
+					</div>
+					
+				</div>	
+
+			</div>
+			
+			<div class="div_porcentaje_votos_banner d-flex mt-3 me-0">
+				<div id="card_hero_positivo_banner" class="card_hero_banner pe-2 text-end">
+				   	<p id="card_hero_positivo_value" class="card_hero_value"></p>
+				</div>
+				<div id="card_hero_negativo_banner" class="card_hero_banner ps-2 text-start">
+				    <p id="card_hero_negativo_value" class="card_hero_value"></p>
+				</div>
+		    </div>
+		</div>
+	</header>
+
+	
+
+	<div class="container mt-5">
+
+
+		<div id="heroes" class="row row-cols-1 row-cols-md-2 g-4 mb-5">
+
+		</div>
+
+		<div id="myModal" class="modal_heroe">
+
+		  <div id="modal_heroe_content" class="modal_heroe_content">
+		    <div class="modal_heroe_header">
+		      <span id="close" class="close">&times;</span>
+		      <h2 id="modal_nombre_texto"></h2>
+		      <p id="modal_alter_texto"></p>
+		    </div>
+		    <div class="modal_heroe_body">
+		      <p id="modal_heroe_info"></p>
+
+		      <p id="modal_heroe_positivos"></p>
+		      <p id="modal_heroe_negativos"></p>
+		      <p id="modal_heroe_votos"></p>
+
+		    </div>
+
+		    <div class="modal_heroe_footer">
+		    	<button id="btn_ir_votar" type="button" class="btn btn-primary">Ir a votar</button>
+		    </div>
+	
+		  </div>
+
+		</div>
+
+	</div>
+
+</body>
+
+<script type="text/javascript">
+
+
+	//datos JSON
+
+	const data = [
+			    {
+			    	"id":0,
+			        "superhero":"Batman", 
+			        "publisher":"DC Comics", 
+			        "alter_ego":"Bruce Wayne",
+			        "characters":"Bruce Wayne",
+			        "info":"La identidad secreta de Batman es Bruce Wayne, es un multimillonario magnate empresarial y filántropo dueño de Empresas Wayne en Gotham City. Después de presenciar el asesinato de sus padres, el Dr. Thomas Wayne y Martha Wayne en un violento y fallido asalto cuando era niño, juró venganza contra los criminales, un juramento moderado por el sentido de la justicia. Bruce Wayne se entrena física e intelectualmente y crea un traje inspirado en los murciélagos para combatir el crimen, con sus gadgets de combate del batcinturón y sus vehículos.",
+			        "img":"img/batman.jpg",
+			        "logo":"",
+			        "upvote":12,
+			        "downvote":4
+			    },
+			    {
+			    	"id":1,
+			        "superhero":"Superman", 
+			        "publisher":"DC Comics", 
+			        "alter_ego":"Kal-El",
+			        "characters":"Kal-El",
+			        "info":"Superman nació en el planeta Krypton y recibió el nombre de Kal-El al nacer. Cuando era bebé, sus padres, el científico Jor-El, y su esposa Lara Lor-Van, lo enviaron a la Tierra en una pequeña nave espacial momentos antes de que Krypton fuera destruido en un cataclismo natural.",
+			        "img":"img/superman.jpg",
+			        "logo":"",
+			        "upvote":18,
+			        "downvote":9
+			    },
+			    {
+			    	"id":2,
+			        "superhero":"Flash", 
+			        "publisher":"DC Comics", 
+			        "alter_ego":"Jay Garrick",
+			        "characters":"Jay Garrick, Barry Allen, Wally West, Bart Allen",
+			        "info":"Su poder consiste principalmente en la super velocidad. Varios otros efectos también se atribuyen a su capacidad para controlar la velocidad de las vibraciones moleculares, incluida su capacidad para vibrar a la velocidad para pasar a través de los objetos y viajar por el tiempo.",
+			        "img":"img/flash.jpg",
+			        "logo":"",
+			        "upvote":9,
+			        "downvote":2
+			    },
+			    {
+			    	"id":3,
+			        "superhero":"Green Arrow",
+			        "publisher":"DC Comics", 
+			        "alter_ego":"Oliver Queen",
+			        "characters":"Oliver Queen",
+			        "info":"Su nombre real es Oliver Jonas Queen, un empresario adinerado y propietario de Industrias Queen que también es una celebridad muy conocida en Star City. A veces se muestra vestido como el personaje de Robin Hood, Green Arrow es un arquero que usa sus habilidades para combatir el crimen en sus ciudades natales de Star City y Seattle, así como junto a sus compañeros superhéroes como miembro de la Liga de la Justicia.",
+			        "img":"img/green_arrow.jpg",
+			        "logo":"",
+			        "upvote":14,
+			        "downvote":1
+			    },
+			    {
+			    	"id":4,
+			        "superhero":"Wonder Woman", 
+			        "publisher":"DC Comics", 
+			        "alter_ego":"Princess Diana",
+			        "characters":"Princess Diana",
+			        "info":"En su tierra natal es conocida como la princesa Diana de Temiscira pero fuera de esta utiliza la identidad secreta de Diana Prince. Está dotada de una amplia gama de poderes superhumanos y habilidades de combate de batalla superiores, gracias a sus dones obtenidos de los dioses y su amplio entrenamiento.",
+			        "img":"img/wonder_woman.jpg",
+			        "logo":"",
+			        "upvote":20,
+			        "downvote":10
+			    },
+			    {
+			    	"id":5,
+			        "superhero":"Black Canary", 
+			        "publisher":"DC Comics", 
+			        "alter_ego":"Dinah Drake",
+			        "characters":"Dinah Drake, Dinah Lance",
+			        "info":"Dinah Drake era hija de un policía de Gotham City, decidida a seguir los pasos de su padre, Dinah intentó ingresar a la academia de policía de la ciudad pero fue rechazada. Decidida a dedicar su vida a combatir el crimen tomó la decisión de convertirse en Canario Negro y hacer justicia por su cuenta.",
+			        "img":"img/black_canary.jpg",
+			        "logo":"",
+			        "upvote":10,
+			        "downvote":10
+
+			    },
+			    {
+			    	"id":6,
+			        "superhero":"Spider Man", 
+			        "publisher":"Marvel Comics", 
+			        "alter_ego":"Peter Parker",
+			        "characters":"Peter Parker",
+			        "info":"Peter Benjamin Parker es un joven huérfano nativo de Forest Hills, Queens, en Nueva York, que vive con sus tíos May y Ben. Durante su etapa como estudiante de la ficticia Midtown High School, es mordido por una araña radiactiva en una exhibición científica y «adquiere la agilidad y la fuerza proporcional de un arácnido» Además de incrementar sus habilidades atléticas, a partir de ese momento Parker es capaz de adherirse a superficies. Gracias a sus conocimientos científicos, desarrolla un dispositivo que le permite disparar telarañas a través de pequeños cilindros montados en sus muñecas.",
+			        "img":"img/spider_man.jpg",
+			        "logo":"",
+			        "upvote":15,
+			        "downvote":6
+			    },
+			    {
+			    	"id":7,
+			        "superhero":"Captain America", 
+			        "publisher":"Marvel Comics", 
+			        "alter_ego":"Steve Rogers",
+			        "characters":"Steve Rogers",
+			        "info":"Steven Rogers nació en el Lower East Side de Manhattan, en la ciudad de Nueva York, en 1918, hijo de inmigrantes irlandeses pobres, Sarah y Joseph Rogers. Joseph murió cuando Steve era un niño, y Sarah murió de neumonía mientras Steve era un adolescente. A principios de 1940, antes de la entrada de Estados Unidos en la Segunda Guerra Mundial, Rogers es un alto y escuálido estudiante de bellas artes que se especializa en la ilustración y un escritor y artista de cómics.",
+			        "img":"img/captain_america.jpg",
+			        "logo":"",
+			        "upvote":19,
+			        "downvote":1
+			    },
+			    {
+			    	"id":8,
+			        "superhero":"Iron Man", 
+			        "publisher":"Marvel Comics", 
+			        "alter_ego":"Tony Stark",
+			        "characters":"Tony Stark",
+			        "info":"Anthony Edward Stark, conocido como Tony Stark, es un multimillonario magnate empresarial estadounidense, playboy e ingenioso científico, quien sufrió una grave lesión en el pecho durante un secuestro en el Medio Oriente. Cuando sus captores intentan forzarlo a construir un arma de destrucción masiva crea, en cambio, una armadura para salvar su vida y escapar del cautiverio. Más tarde, Stark desarrolla su traje, agregando armas y otros dispositivos tecnológicos que diseñó a través de su compañía, Industrias Stark.",
+			        "img":"img/iron_man.jpg",
+			        "logo":"",
+			        "upvote":25,
+			        "downvote":11
+			    },
+			    {
+			    	"id":9,
+			        "superhero":"Wolverine", 
+			        "publisher":"Marvel Comics", 
+			        "alter_ego":"James Howlett",
+			        "characters":"James Howlett",
+			        "info":"James Howlett nació en Alberta, Canadá, en el siglo XIX. Segundo hijo de Elizabeth Hudson y John Howlett. James nació enfermo y débil. Su madre se encontraba abstraída y distante tras la muerte de su primer hijo llamado John, bajo circunstancias desconocidas. James fue un niño enfermizo y además padecía asma, por lo que siempre estaba bajo el cuidado de una joven llamada Rose Hopkins, contratada por los Howlett específicamente para que lo cuidara y mantuviera contento.",
+			        "img":"img/wolverine.jpg",
+			        "logo":"",
+			        "upvote":4,
+			        "downvote":0
+			    },
+			    {
+			    	"id":10,
+			        "superhero":"Daredevil", 
+			        "publisher":"Marvel Comics", 
+			        "alter_ego":"Matthew Michael Murdock",
+			        "characters":"Matthew Michael Murdock",
+			        "info":"Los orígenes de Daredevil provienen de un accidente que tuvo en su infancia la cual le dio habilidades especiales. Mientras crecía en el vecindario irlandés-estadounidense de Hell's Kitchen de la clase obrera, históricamente áspero y asolado por el crimen, en la ciudad de Nueva York, Matt Murdock es cegado por una sustancia radioactiva que cae de un camión después salvar a un hombre que estaba por ser atropellado por un auto. Si bien ya no puede ver, la exposición radioactiva aumenta sus sentidos restantes más allá de la capacidad humana normal y le da un 'sentido de radar'.",
+			        "img":"img/daredevil.jpg",
+			        "logo":"",
+			        "upvote":15,
+			        "downvote":3
+			    }
+			]
+
+
+	let modal = document.getElementById("myModal");
+
+	let closeBtn = document.getElementById("close");
+
+	let heroeContenido = document.getElementById("modal_heroe_content");
+
+	let heroeNombre = document.getElementById("modal_nombre_texto");
+
+	let heroeAlter = document.getElementById("modal_alter_texto");
+
+	let heroeInfo = document.getElementById("modal_heroe_info");
+
+	let heroePositivos = document.getElementById("modal_heroe_positivos");
+
+	let heroeNegativos = document.getElementById("modal_heroe_negativos");
+
+	let heroeVotos = document.getElementById("modal_heroe_votos");
+
+
+	let bannerPrincipal = document.getElementById('banner_principal');
+
+	let tituloBanner = document.getElementById('titulo_banner_voto');
+
+	let contenidoBannerVoto = document.getElementById('contenido_banner_voto');
+
+	let segundoContenidoBannerVoto = document.getElementById('contenido_dos_banner_voto');
+
+	let btnVotoPositivo = document.getElementById('btn_votos_positivos');
+
+	let btnVotoNegativo = document.getElementById('btn_votos_negativos');
+
+	let porcentajePositivoBanner = document.getElementById('card_hero_positivo_banner');
+
+	let porcentajeNegativoBanner = document.getElementById('card_hero_negativo_banner');
+
+	let valorPorcentajePositivoBanner = document.getElementById('card_hero_positivo_value');
+
+	let valorPorcentajeNegativoBanner = document.getElementById('card_hero_negativo_value');
+
+	let btnVolver = document.getElementById('btn_volver');
+
+
+
+
+	//Con esta función verificamos si hay un archivo JSON en el storage, en caso de que no exista se crea uno
+	var dataAlmacenada = localStorage.getItem("dataLocal");
+
+	if (!dataAlmacenada) {
+
+		localStorage.setItem("dataLocal", JSON.stringify(data));
+
+		var dataAlmacenada = localStorage.getItem("dataLocal");
+
+		dataAlmacenada = JSON.parse(dataAlmacenada);
+
+	}else {
+		dataAlmacenada = JSON.parse(dataAlmacenada);
+	}
+
+	
+
+
+	//Esta función sirve para comparar dos arrays (el de los datos quemados y el de storage) y en caso de que no sean iguales se reemplaza el valor
+	//Utilicé este método para mantener los datos aún despues de cerrar la ventana 
+	
+
+	for (var i = 0; i < dataAlmacenada.length; i++) {
+		
+		if (dataAlmacenada[i] !== data[i]) {
+
+			data[i] = dataAlmacenada[i];
+
+		}
+	}
+
+
+	
+
+	//Función para filtar los elementos desde la barra de búsqueda del navbar
+	function buscar(termino) {
+
+		if (termino != "") {
+
+			busqueda = data.filter( dato => { return dato.superhero.toLocaleLowerCase().indexOf(termino.toLocaleLowerCase()) > -1 } );
+
+			let hero_container = document.getElementById('heroes');
+
+			hero_container.innerHTML = "";
+
+			for (var i = 0; i < busqueda.length; i++) {
+
+				let porcentaje_votos_positivos = Math.round((busqueda[i].upvote * 100) / (busqueda[i].upvote + busqueda[i].downvote))+"%"; 
+				let porcentaje_votos_negativos = Math.round((busqueda[i].downvote * 100) / (busqueda[i].upvote + busqueda[i].downvote))+"%";
+
+
+				dataHeroes(busqueda[i].id, busqueda[i].img, busqueda[i].superhero, busqueda[i].info.substr(0, 265), porcentaje_votos_positivos, porcentaje_votos_negativos);
+				
+			}
+
+		}else {
+			cargarHeroe();
+		}
+
+		
+	}
+
+	
+
+
+
+
+
+
+	//Función para crear elementos HTML con el arreglo de datos que recibe desde la función cargarHeroe
+	function dataHeroes(index, img, superheroe, info, positivos, negativos) {
+
+	let hero_container = document.getElementById('heroes');
+
+
+	hero_container = hero_container.insertAdjacentHTML("beforeend", "<div class='col'><div class='card card_hero' style='background-image:url("+img+")'><div class='card-body container-fluid card_hero_body ps-0 pe-0 pb-0'><h5 class='card-title ms-3 me-3'>"+superheroe+"</h5><p class='card-text ms-3 me-3'>"+info+"...</p><button type='button' class='btn btn-outline-primary ms-3 me-3' onclick='cargarModal("+index+")'>Ver detalle</button><div class='d-flex mt-3 me-0'><div style='width: "+positivos+";' class='card_hero_positivo text-start'><h4>"+positivos+"</h4></div><div style='width: "+negativos+";' class='card_hero_negativo text-end'><h4>"+negativos+"</h4></div></div></div></div></div>");
+
+	}
+
+
+
+	//Función que cuenta los elementos del arreglo y los envía a la función dataHeroes
+	function cargarHeroe() {
+
+		let hero_container = document.getElementById('heroes');
+
+		hero_container.innerHTML = "";
+
+		for (var i = 0; i < data.length; i++) {
+
+			let porcentaje_votos_positivos = Math.round((data[i].upvote * 100) / (data[i].upvote + data[i].downvote))+"%"; 
+			let porcentaje_votos_negativos = Math.round((data[i].downvote * 100) / (data[i].upvote + data[i].downvote))+"%";
+
+
+			dataHeroes(i, data[i].img, data[i].superhero, data[i].info.substr(0, 265), porcentaje_votos_positivos, porcentaje_votos_negativos);
+			
+		}
+
+	}
+
+
+	cargarHeroe();
+	
+
+
+
+	//Función que recibe un parametro (número de fila del arreglo) para mostrar un modal con la información del respectivo personaje
+	function cargarModal(index) {
+
+
+		heroeId = index;
+
+		let heroeImg = data[index].img;
+
+		let superHero = data[index].superhero;
+
+		let alterEgo = data[index].alter_ego;
+
+		let info = data[index].info;
+
+		let votosPositivos = data[index].upvote;
+
+		let votosNegativos = data[index].downvote;
+
+		let totalVotos = data[index].upvote + data[index].downvote;
+
+		let porcentaje_votos_positivos = Math.round((votosPositivos * 100) / (votosPositivos + votosNegativos))+"%";
+
+		let porcentaje_votos_negativos = Math.round((votosNegativos * 100) / (votosPositivos + votosNegativos))+"%";
+
+		let btnVotar = document.getElementById('btn_ir_votar');
+
+		modal.style.display = "block";
+
+		heroeContenido.style.backgroundImage = "url("+heroeImg+")";
+
+		heroeNombre.innerHTML = superHero;
+
+		heroeAlter.innerHTML = alterEgo;
+
+		heroeInfo.innerHTML = info;
+
+		heroePositivos.innerHTML = "Votos positivos: "+votosPositivos;
+
+		heroeNegativos.innerHTML = "Votos negativos: "+votosNegativos;
+
+		heroeVotos.innerHTML = "Total votos: "+totalVotos;
+
+
+
+		//Función de click para enviar los datos del personaje al banner principal y realizar el proceso de votación
+		btnVotar.addEventListener('click', function(event) {
+
+
+			bannerPrincipal.style.backgroundImage = "url("+heroeImg+")";
+
+			tituloBanner.innerHTML = "Dinos tu opinión sobre "+superHero;
+
+			contenidoBannerVoto.innerHTML = info;
+
+			segundoContenidoBannerVoto.style.display = 'block';
+
+			btnVotoPositivo.style.display = 'block';
+
+			btnVotoNegativo.style.display = 'block';
+
+			porcentajePositivoBanner.style.width = porcentaje_votos_positivos;
+
+			porcentajeNegativoBanner.style.width = porcentaje_votos_negativos;
+
+			valorPorcentajePositivoBanner.innerHTML = porcentaje_votos_positivos;
+
+			valorPorcentajeNegativoBanner.innerHTML = porcentaje_votos_negativos;
+
+			porcentajePositivoBanner.style.display = 'block';
+
+			porcentajeNegativoBanner.style.display = 'block';
+
+
+			modal.style.display = "none";
+
+			location.href = "#banner_principal";
+
+			
+	
+
+			btnVotoPositivo.addEventListener('click', guardarVotoPositivo, true );
+
+			btnVotoNegativo.addEventListener('click', guardarVotoNegativo, true );
+
+
+			return;
+
+		}, {once: true});
+
+		return;
+	}
+
+
+	//Función para guardar el nuevo voto positivo en el array almacenado en el storage
+
+	function guardarVotoPositivo() {
+
+		dataAlmacenada[heroeId].upvote++;
+
+		dataAlmacenada[heroeId].upvote = dataAlmacenada[heroeId].upvote;
+
+		data[heroeId].upvote = dataAlmacenada[heroeId].upvote;
+
+
+		localStorage.setItem("dataLocal", JSON.stringify(data));
+
+		votosPositivos = data[heroeId].upvote;
+
+		votosNegativos = data[heroeId].downvote;
+
+
+		porcentaje_votos_positivos = Math.round((votosPositivos * 100) / (votosPositivos + votosNegativos))+"%";
+
+		porcentaje_votos_negativos = Math.round((votosNegativos * 100) / (votosPositivos + votosNegativos))+"%";
+
+		porcentajePositivoBanner.style.width = porcentaje_votos_positivos;
+
+		porcentajeNegativoBanner.style.width = porcentaje_votos_negativos;
+
+		valorPorcentajePositivoBanner.innerHTML = porcentaje_votos_positivos;
+
+		valorPorcentajeNegativoBanner.innerHTML = porcentaje_votos_negativos;
+
+		afterVoto();
+
+		cargarHeroe();
+	}
+
+
+
+	//Función para guardar el nuevo voto negativo en el array almacenado en el storage
+
+	function guardarVotoNegativo() {
+
+		dataAlmacenada[heroeId].downvote++;
+
+		dataAlmacenada[heroeId].downvote = dataAlmacenada[heroeId].downvote;
+
+		data[heroeId].downvote = dataAlmacenada[heroeId].downvote;
+
+
+		localStorage.setItem("dataLocal", JSON.stringify(data));
+
+		votosPositivos = data[heroeId].upvote;
+
+		votosNegativos = data[heroeId].downvote;
+
+
+		porcentaje_votos_positivos = Math.round((votosPositivos * 100) / (votosPositivos + votosNegativos))+"%";
+
+		porcentaje_votos_negativos = Math.round((votosNegativos * 100) / (votosPositivos + votosNegativos))+"%";
+
+		porcentajePositivoBanner.style.width = porcentaje_votos_positivos;
+
+		porcentajeNegativoBanner.style.width = porcentaje_votos_negativos;
+
+		valorPorcentajePositivoBanner.innerHTML = porcentaje_votos_positivos;
+
+		valorPorcentajeNegativoBanner.innerHTML = porcentaje_votos_negativos;
+
+		afterVoto();
+
+		cargarHeroe();
+	}
+
+
+
+
+	function afterVoto() {
+
+		
+
+		tituloBanner.innerHTML = "Tu voto ha sido registrado";
+
+		contenidoBannerVoto.innerHTML = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmodtempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodoconsequat. Duis aute irure dolor in reprehenderit in voluptate velit essecillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat nonproident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+
+		btnVolver.style.display = 'block';
+
+		segundoContenidoBannerVoto.style.display = 'none';
+
+		btnVotoPositivo.style.display = 'none';
+
+		btnVotoNegativo.style.display = 'none';
+
+
+
+	}
+
+
+
+	function nuevoVoto() {
+
+
+		bannerPrincipal.style.backgroundImage = "url('img/banner.jpg')";
+
+		tituloBanner.innerHTML = "¿Cómo funciona?";
+
+		contenidoBannerVoto.innerHTML = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmodtempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodoconsequat. Duis aute irure dolor in reprehenderit in voluptate velit essecillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat nonproident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+
+		btnVolver.style.display = 'none';
+
+		segundoContenidoBannerVoto.style.display = 'none';
+
+
+		
+
+	}
+
+
+
+	//Funciones para mostrar y esconder el modal
+	closeBtn.onclick = function() {
+	  modal.style.display = "none";
+	  return;
+	}
+
+	window.onclick = function(event) {
+	  if (event.target == modal) {
+	    modal.style.display = "none";
+	  }
+	  return;
+	}
+
+
+	
+
+
+
+	
+
+
+</script>
+</html>
